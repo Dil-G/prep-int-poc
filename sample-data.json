@@ -1,0 +1,43 @@
+{
+  "name": "John Doe",
+  "age": 30,
+  "isActive": true,
+  "email": "john.doe@example.com",
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
+  },
+  "phoneNumbers": [
+    {
+      "type": "home",
+      "number": "212-555-1234"
+    },
+    {
+      "type": "work",
+      "number": "212-555-5678"
+    }
+  ],
+  "hobbies": ["reading", "swimming", "coding"],
+  "skills": {
+    "programming": ["JavaScript", "Python", "React"],
+    "languages": ["English", "Spanish"],
+    "certifications": ["AWS", "Google Cloud"]
+  },
+  "metadata": {
+    "createdAt": "2023-01-15T10:30:00Z",
+    "lastUpdated": "2023-12-01T14:45:00Z",
+    "version": 1.2,
+    "tags": ["developer", "senior", "fullstack"],
+    "preferences": {
+      "theme": "dark",
+      "notifications": true,
+      "timezone": "UTC-5"
+    }
+  },
+  "nullValue": null,
+  "emptyArray": [],
+  "emptyObject": {}
+} 

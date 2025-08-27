@@ -1,0 +1,370 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.App {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.App-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+}
+
+.App-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.App-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.App-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.input-section {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.input-container label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.input-container textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.input-container input,
+.input-container select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.input-container input:focus,
+.input-container select:focus,
+.input-container textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-row {
+  margin-bottom: 14px;
+}
+
+.input-inline {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+}
+
+.input-inline .grow {
+  flex: 1;
+}
+
+.parse-button {
+  margin-top: 15px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.parse-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.parse-button:active {
+  transform: translateY(0);
+}
+
+.meta {
+  margin-top: 10px;
+  color: #666;
+  font-size: 12px;
+}
+
+.error-message {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+  color: #c33;
+}
+
+.error-message h3 {
+  margin-bottom: 10px;
+  color: #a00;
+}
+
+.output-section {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.output-section h2 {
+  margin-bottom: 12px;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.response-meta {
+  display: flex;
+  gap: 16px;
+  color: #444;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.json-display {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.text-response pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f8f9fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 10px;
+  padding: 12px;
+  max-height: 280px;
+  overflow: auto;
+}
+
+/* New form view styles */
+.form-view .form-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.form-label {
+  color: #555;
+  font-weight: 600;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #333;
+}
+
+.form-section {
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+
+.grid-span {
+  grid-column: 1 / -1;
+}
+
+.card-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.card {
+  border: 1px solid #e1e5e9;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+
+.card-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.card-body {
+  padding-top: 4px;
+}
+
+.expand-toggle {
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  color: #667eea;
+  transition: color 0.3s ease;
+}
+
+.expand-toggle:hover {
+  color: #764ba2;
+}
+
+.array-container,
+.object-container {
+  margin: 5px 0;
+}
+
+.array-content,
+.object-content {
+  margin-left: 20px;
+  border-left: 2px solid #e1e5e9;
+  padding-left: 15px;
+  margin-top: 5px;
+}
+
+.array-item,
+.object-item {
+  margin: 5px 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.array-index {
+  color: #666;
+  font-weight: 600;
+  margin-right: 10px;
+  min-width: 40px;
+}
+
+.object-key {
+  color: #d63384;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+.string-value {
+  color: #198754;
+}
+
+.number-value {
+  color: #0d6efd;
+}
+
+.boolean-value {
+  color: #fd7e14;
+}
+
+.null-value {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .App-main {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .App {
+    padding: 15px;
+  }
+  
+  .input-section,
+  .output-section {
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading animation for parse button */
+.parse-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Smooth transitions for expand/collapse */
+.array-content,
+.object-content {
+  transition: all 0.3s ease;
+}
+
+/* Custom scrollbar for textarea */
+.input-container textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.input-container textarea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.input-container textarea::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.input-container textarea::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+} 
