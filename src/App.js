@@ -3,7 +3,9 @@ import './App.css';
 
 function App() {
   // Hardcoded request config
-  const DESCRIPTION = `This process is a workflow that collects data from multiple sources and returns it in a clean, organized format. Here’s how it works:
+  const TITLE = 'JSON API Client';
+  const DESCRIPTION = `This workflow consolidates data from multiple sources and delivers it in a structured, well-organized format.
+
 
   RECEIVING REQUESTS:
   The system starts when it receives a request from a user or another application. The request specifies which data source (like "enin") to query and provides the details of what information is needed.
@@ -283,27 +285,10 @@ function App() {
 
   return (
     <div className="App">
-      <div className="description-section">
-        <h2>Workflow overview</h2>
-        {descriptionIntro.length > 0 && (
-          <p style={{ marginBottom: 12 }}>{descriptionIntro.join(' ')}</p>
-        )}
-        {descriptionSections.map((sec, i) => (
-          <div key={i} style={{ marginBottom: 10 }}>
-            <h3 style={{ margin: '6px 0 6px 0' }}>{sec.title}</h3>
-            {sec.items.length > 0 && (
-              <ul>
-                {sec.items.map((it, j) => (
-                  <li key={j}>{it}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
-      </div>
       <header className="App-header">
-        <h1>JSON API Client</h1>
+        <h1>The Prep Integration Data</h1>
         <p>Hardcoded POST request with predefined body. Click to send.</p>
+        <p>An explanation of how this works is provided at the end</p>
       </header>
       
       <main className="App-main">
@@ -348,6 +333,24 @@ function App() {
           </div>
         )}
       </main>
+      <div className="description-section" style={{ marginTop: '20px' }}>
+        <h2>Workflow overview</h2>
+        {descriptionIntro.length > 0 && (
+          <p style={{ marginBottom: 12 }}>{descriptionIntro.join(' ')}</p>
+        )}
+        {descriptionSections.map((sec, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <h3 style={{ margin: '6px 0 6px 0' }}>{sec.title}</h3>
+            {sec.items.length > 0 && (
+              <ul>
+                {sec.items.map((it, j) => (
+                  <li key={j}>{it}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
