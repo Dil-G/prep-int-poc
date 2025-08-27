@@ -203,48 +203,69 @@ function App() {
     return null;
   };
 
+  // Deep merge helper to combine multiple response items into one form
+  const deepMergeObjects = (a, b) => {
+    if (Array.isArray(a) || Array.isArray(b)) {
+      return b ?? a; // prefer latest array
+    }
+    if (a && typeof a === 'object' && b && typeof b === 'object') {
+      const result = { ...a };
+      Object.keys(b).forEach((key) => {
+        if (key in result) {
+          result[key] = deepMergeObjects(result[key], b[key]);
+        } else {
+          result[key] = b[key];
+        }
+      });
+      return result;
+    }
+    return b ?? a;
+  };
+
   // Form-like renderer for response data (editable)
   const renderEditableForm = () => {
     if (!formData.length) return null;
 
+    // Merge all items to display a single unified form
+    const mergedItem = formData.reduce((acc, curr) => deepMergeObjects(acc, curr), {});
+    const index = 0; // updates will be applied to the first item for now
+
     return (
       <div style={{ padding: "20px" }}>
-        {formData.map((item, index) => (
-          <div key={index} style={{ marginBottom: "30px", border: "1px solid #ccc", padding: "15px", borderRadius: 8 }}>
-            {Object.keys(item).map((key) => {
-              const value = item[key];
-              if (typeof value === "object" && value !== null) return null;
-              return (
+        <div style={{ marginBottom: "30px", border: "1px solid #ccc", padding: "15px", borderRadius: 8 }}>
+          {Object.keys(mergedItem).map((key) => {
+            const value = mergedItem[key];
+            if (typeof value === "object" && value !== null) return null;
+            return (
+              <div key={key} style={{ marginBottom: "10px" }}>
+                <label style={{ display: 'inline-block', minWidth: 160, fontWeight: 600 }}>{key}:</label>
+                <input
+                  type="text"
+                  value={value ?? ''}
+                  onChange={(e) => handleChange(index, key, e.target.value)}
+                  style={{ marginLeft: "10px", padding: '8px 10px', borderRadius: 8, border: '1px solid #ddd', width: '60%' }}
+                />
+              </div>
+            );
+          })}
+
+          {mergedItem.Free_text?.details?.grunnboka && (
+            <div style={{ marginTop: "10px" }}>
+              <h4 style={{ marginBottom: 10 }}>Grunnboka</h4>
+              {Object.entries(mergedItem.Free_text.details.grunnboka).map(([key, value]) => (
                 <div key={key} style={{ marginBottom: "10px" }}>
                   <label style={{ display: 'inline-block', minWidth: 160, fontWeight: 600 }}>{key}:</label>
                   <input
                     type="text"
                     value={value ?? ''}
-                    onChange={(e) => handleChange(index, key, e.target.value)}
+                    onChange={(e) => handleChange(index, "Free_text", { ...formData[index]?.Free_text, details: { ...(formData[index]?.Free_text?.details || {}), grunnboka: { ...(formData[index]?.Free_text?.details?.grunnboka || {}), [key]: e.target.value } } })}
                     style={{ marginLeft: "10px", padding: '8px 10px', borderRadius: 8, border: '1px solid #ddd', width: '60%' }}
                   />
                 </div>
-              );
-            })}
-
-            {item.Free_text?.details?.grunnboka && (
-              <div style={{ marginTop: "10px", paddingLeft: "20px" }}>
-                <h4 style={{ marginBottom: 10 }}>Grunnboka</h4>
-                {Object.entries(item.Free_text.details.grunnboka).map(([key, value]) => (
-                  <div key={key} style={{ marginBottom: "10px" }}>
-                    <label style={{ display: 'inline-block', minWidth: 160, fontWeight: 600 }}>{key}:</label>
-                    <input
-                      type="text"
-                      value={value ?? ''}
-                      onChange={(e) => handleChange(index, "Free_text", { ...item.Free_text, details: { ...item.Free_text.details, grunnboka: { ...item.Free_text.details.grunnboka, [key]: e.target.value } } })}
-                      style={{ marginLeft: "10px", padding: '8px 10px', borderRadius: 8, border: '1px solid #ddd', width: '60%' }}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -351,11 +372,11 @@ function App() {
               </>
             )}
 
-            {!responseData && responseText && (
+            {/* {!responseData && responseText && (
               <div className="text-response">
                 <pre>{(() => { try { return JSON.parse(responseText)?.kommunenr; } catch { return responseText; } })()}</pre>
               </div>
-            )}
+            )} */}
           </div>
         )}
       </main>
