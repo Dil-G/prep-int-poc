@@ -60,7 +60,6 @@ function App() {
   const [statusInfo, setStatusInfo] = useState(null); // { status, statusText, durationMs }
 
   const [error, setError] = useState('');
-  const [isExpanded, setIsExpanded] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   // Editable form state based on response
@@ -74,11 +73,6 @@ function App() {
     }
   }, [responseData]);
 
-  // Handle form submit
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-  };
   // Helper to update nested fields (shallow copy array, then update)
   const handleChange = (index, key, value, nestedKey) => {
     setFormData((prev) => {
@@ -91,80 +85,6 @@ function App() {
       }
       return newData;
     });
-  };
-
-  const toggleExpanded = (path) => {
-    setIsExpanded(prev => ({
-      ...prev,
-      [path]: !prev[path]
-    }));
-  };
-
-  const renderValue = (value, path = '') => {
-    if (value === null) {
-      return <span className="null-value">null</span>;
-    }
-    
-    if (typeof value === 'boolean') {
-      return <span className="boolean-value">{value.toString()}</span>;
-    }
-    
-    if (typeof value === 'number') {
-      return <span className="number-value">{value}</span>;
-    }
-    
-    if (typeof value === 'string') {
-      return <span className="string-value">"{value}"</span>;
-    }
-    
-    if (Array.isArray(value)) {
-      return (
-        <div className="array-container">
-          <span 
-            className="expand-toggle"
-            onClick={() => toggleExpanded(path)}
-          >
-            {isExpanded[path] ? '▼' : '▶'} Array [{value.length}]
-          </span>
-          {isExpanded[path] && (
-            <div className="array-content">
-              {value.map((item, index) => (
-                <div key={index} className="array-item">
-                  <span className="array-index">[{index}]:</span>
-                  {renderValue(item, `${path}[${index}]`)}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    }
-    
-    if (typeof value === 'object') {
-      const keys = Object.keys(value);
-      return (
-        <div className="object-container">
-          <span 
-            className="expand-toggle"
-            onClick={() => toggleExpanded(path)}
-          >
-            {isExpanded[path] ? '▼' : '▶'} Object {keys.length > 0 ? `{${keys.length} properties}` : '{}'}
-          </span>
-          {isExpanded[path] && (
-            <div className="object-content">
-              {keys.map(key => (
-                <div key={key} className="object-item">
-                  <span className="object-key">"{key}":</span>
-                  {renderValue(value[key], `${path}.${key}`)}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    }
-    
-    return <span>{String(value)}</span>;
   };
 
   // Try to coerce plain text into JSON or array of JSON objects
@@ -268,21 +188,6 @@ function App() {
         </div>
       </div>
     );
-  };
-
-  const beautifyKey = (key) => {
-    return key
-      .replace(/_/g, ' ')
-      .replace(/([a-z])([A-Z])/g, '$1 $2')
-      .replace(/\s+/g, ' ')
-      .replace(/^./, (s) => s.toUpperCase());
-  };
-
-  const formatPrimitive = (val) => {
-    if (val === null) return 'null';
-    if (typeof val === 'boolean') return val ? 'true' : 'false';
-    if (typeof val === 'number') return String(val);
-    return String(val ?? '');
   };
 
   const sendRequest = async () => {
