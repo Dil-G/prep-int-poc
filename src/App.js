@@ -3,6 +3,34 @@ import './App.css';
 
 function App() {
   // Hardcoded request config
+  const DESCRIPTION = `This process is a workflow that collects data from multiple sources and returns it in a clean, organized format. Here’s how it works:
+
+  RECEIVING REQUESTS:
+  The system starts when it receives a request from a user or another application. The request specifies which data source (like "enin") to query and provides the details of what information is needed.
+
+
+
+  CHOOSING THE DATA SOURCE:
+  The system checks which data provider is being requested. Right now, it knows how to handle "enin." If an unknown provider is requested, it returns an error or an empty result.
+
+  PROCESSING EACH REQUEST:
+  For every data endpoint specified in the request, the system does the following:
+  - Figures out the exact location to retrieve the data.
+  - Converts any input details into a format the system can send as a query.
+  - Authenticates securely to access the data.
+  - Calls the data provider and retrieves the response.
+
+  STANDARDIZING THE DATA:
+  Since different endpoints may return data in different formats, the system organizes each response into a consistent structure.
+
+
+  COMBINING THE DATA:
+  Once all the endpoints are processed, the system merges the individual results into one final object. This gives a single, organized view of all the requested information.
+
+  RETURNING THE RESULTS:
+  Finally, the system sends back the clean, combined data as a response in JSON format, ready for the user or application to consume.
+
+  `;
   const API_URL = 'https://prod-31.norwayeast.logic.azure.com:443/workflows/180daec8b4e24b938b34c36e0a81eabf/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=ovQt_K-FxOnuvWS3ubNDZqp-pJ3olIac5VxBqeU_Gf0';
   const METHOD = 'POST';
   const BODY_OBJECT = {
@@ -65,6 +93,34 @@ function App() {
   // Editable form state based on response
   const [formData, setFormData] = useState([]);
 
+  // Parse DESCRIPTION into intro + sections with topics
+  const parseDescription = (text) => {
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    let intro = [];
+    const sections = [];
+    let current = null;
+    const topicRegex = /^[A-Z0-9 \-()]+:$/;
+
+    lines.forEach((line, idx) => {
+      if (topicRegex.test(line)) {
+        const title = line.replace(/:$/, '');
+        current = { title, items: [] };
+        sections.push(current);
+        return;
+      }
+      if (!current) {
+        intro.push(line);
+      } else {
+        // strip leading bullet dash
+        const item = line.startsWith('- ') ? line.slice(2) : line;
+        current.items.push(item);
+      }
+    });
+    return { intro, sections };
+  };
+
+  const { intro: descriptionIntro, sections: descriptionSections } = parseDescription(DESCRIPTION);
+
   useEffect(() => {
     if (responseData) {
       setFormData(Array.isArray(responseData) ? responseData : [responseData]);
@@ -92,26 +148,22 @@ function App() {
     const trimmed = (text || '').trim();
     if (!trimmed) return null;
 
-    // First try plain JSON
     try {
       return JSON.parse(trimmed);
     } catch {}
 
-    // Try wrapping concatenated objects into an array: ...}{...} => [{...},{...}]
     try {
       const normalized = '[' + trimmed.replace(/}\s*\n?\s*{?/g, (m) => '},{').replace(/,\s*]$/,' ]') + ']';
       const arr = JSON.parse(normalized);
       if (Array.isArray(arr)) return arr;
     } catch {}
 
-    // Try splitting by newlines and parsing each line as JSON
     try {
       const lines = trimmed.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
       const arr = lines.map(l => JSON.parse(l));
       if (arr.length) return arr;
     } catch {}
 
-    // Try NDJSON separated by }{ without newline
     try {
       const parts = trimmed.split(/}\s*{+/).filter(Boolean).map((p, i, a) => {
         const s = (i > 0 ? '{' : '') + p + (i < a.length - 1 ? '}' : '');
@@ -126,7 +178,7 @@ function App() {
   // Deep merge helper to combine multiple response items into one form
   const deepMergeObjects = (a, b) => {
     if (Array.isArray(a) || Array.isArray(b)) {
-      return b ?? a; // prefer latest array
+      return b ?? a;
     }
     if (a && typeof a === 'object' && b && typeof b === 'object') {
       const result = { ...a };
@@ -146,9 +198,8 @@ function App() {
   const renderEditableForm = () => {
     if (!formData.length) return null;
 
-    // Merge all items to display a single unified form
     const mergedItem = formData.reduce((acc, curr) => deepMergeObjects(acc, curr), {});
-    const index = 0; // updates will be applied to the first item for now
+    const index = 0;
 
     return (
       <div style={{ padding: "20px" }}>
@@ -216,7 +267,6 @@ function App() {
         setResponseData(data);
       } else {
         const text = await res.text();
-        // Try parsing text as JSON; attempt coercion to array of objects if needed
         const coerced = coerceTextToJson(text);
         if (coerced !== null) {
           setResponseData(coerced);
@@ -233,6 +283,24 @@ function App() {
 
   return (
     <div className="App">
+      <div className="description-section">
+        <h2>Workflow overview</h2>
+        {descriptionIntro.length > 0 && (
+          <p style={{ marginBottom: 12 }}>{descriptionIntro.join(' ')}</p>
+        )}
+        {descriptionSections.map((sec, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <h3 style={{ margin: '6px 0 6px 0' }}>{sec.title}</h3>
+            {sec.items.length > 0 && (
+              <ul>
+                {sec.items.map((it, j) => (
+                  <li key={j}>{it}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
       <header className="App-header">
         <h1>JSON API Client</h1>
         <p>Hardcoded POST request with predefined body. Click to send.</p>
@@ -277,11 +345,6 @@ function App() {
               </>
             )}
 
-            {/* {!responseData && responseText && (
-              <div className="text-response">
-                <pre>{(() => { try { return JSON.parse(responseText)?.kommunenr; } catch { return responseText; } })()}</pre>
-              </div>
-            )} */}
           </div>
         )}
       </main>
