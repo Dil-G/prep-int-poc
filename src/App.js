@@ -227,23 +227,27 @@ function App() {
                     </div>
                   ))}
                 </div>
-                  <button
-                    style={{
-                      marginTop: 8,
-                      padding: '8px 18px',
-                      background: '#d21957ff',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: 6,
-                      fontWeight: 600,
-                      fontSize: 15,
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)',
-                      transition: 'background 0.2s'
-                    }}
-                  onClick={() => setSelectedEndpoints(prev => prev.filter((_, i) => i !== idx))}
-                  disabled={selectedEndpoints.length === 1}
-                >Remove Endpoint</button>
+                {selectedEndpoints.length > 1 && (
+        <button
+          style={{
+            marginTop: 8,
+            padding: '8px 18px',
+            background: '#d21957ff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 6,
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(25, 118, 210, 0.08)',
+            transition: 'background 0.2s',
+            ...(selectedEndpoints.length === 1 && { background: '#ccc', cursor: 'not-allowed' })
+          }}
+          onClick={() => setSelectedEndpoints(prev => prev.filter((_, i) => i !== idx))}
+        >
+          Remove Endpoint
+        </button>
+      )}
               </div>
             );
           })}
@@ -271,7 +275,7 @@ function App() {
               ]);
             }}
           >
-            Add Endpoint
+            Add Another Endpoint
           </button>
         </div>
       </div>
